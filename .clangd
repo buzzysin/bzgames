@@ -1,0 +1,30 @@
+# Clang-Tidy configuration file.
+---
+# Checks: "clang-diagnostic-*,clang-analyzer-*,modernize-*,readability-*,performance-*,bugprone-*,cppcoreguidelines-*"
+# WarningsAsErrors: true
+# HeaderFilterRegex: ""
+# CheckOptions:
+#   # Class member variables must start with an underscore, like this: _XXXXXX
+#   - key: readability-identifier-naming.ClassMemberVariable
+#     value: "^[a-z]_.*$"
+# Diagnostics:
+#   ClangTidy:
+#     Remove:
+#       - modernize-use-trailing-return-type
+
+Diagnostics:
+  ClangTidy:
+    Add:
+      - clang-diagnostic-*
+      - clang-analyzer-*
+      - modernize-*
+      - readability-*
+      - performance-*
+      - bugprone-*
+      - cppcoreguidelines-*
+    Remove:
+      - modernize-use-trailing-return-type
+      - readability-redundant-access-specifiers
+      - bugprone-easily-swappable-parameters
+    CheckOptions:
+      readability-identifier-length.IgnoredVariableNames: "^(id)$"

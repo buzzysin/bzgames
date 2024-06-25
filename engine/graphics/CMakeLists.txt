@@ -1,0 +1,17 @@
+bz_lib(graphics
+  PARENT
+    engine
+  DEPENDS
+    bz::core
+    OpenGL
+    GLEW
+    glfw
+  SOURCES
+    src/gl_mesh.cpp
+    src/gl_vertex_array.cpp
+    src/gl_vertex_buffer.cpp
+    src/gl_renderer.cpp
+    src/gl_shader.cpp
+    src/gl_window_private.cpp
+    src/gl_window.cpp
+)

@@ -1,0 +1,14 @@
+---
+Language: Cpp
+# BreakTemplateDeclarations: Yes
+AlwaysBreakTemplateDeclarations: Yes
+
+TabWidth: 4
+UseTab: AlignWithSpaces
+
+IndentWidth: 4
+IndentAccessModifiers: No
+AccessModifierOffset: -4
+NamespaceIndentation: None
+---
+

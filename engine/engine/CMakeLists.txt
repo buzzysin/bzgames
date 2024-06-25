@@ -1,0 +1,12 @@
+bz_lib(engine
+  PARENT 
+   engine
+  DEPENDS
+    bz::core
+    bz::engine::common
+    bz::engine::audio
+    bz::engine::graphics
+    bz::engine::physics
+  SOURCES
+    src/engine.cpp
+  )

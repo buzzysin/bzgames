@@ -1,0 +1,11 @@
+bz_app(geometria
+  PARENT
+    games
+  DEPENDS
+    bz::core
+    bz::engine::common
+    bz::engine::engine
+    bz::engine::graphics
+  SOURCES
+    src/main.cpp
+    src/geometria.cpp)

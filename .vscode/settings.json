@@ -1,0 +1,8 @@
+{
+  "C_Cpp.intelliSenseEngine": "disabled",
+  "C_Cpp.autoAddFileAssociations": false,
+  "C_Cpp.commentContinuationPatterns": ["/**"],
+  "files.associations": {
+    "*.tpp": "cpp"
+  }
+}
