@@ -1,34 +1,36 @@
 #pragma once
 
+#include "graphics/gl_vertex_buffer.h"
 #include "graphics/vertex_array.h"
 #include <core/error.h>
 #include <core/result.h>
+#include <functional>
 
-namespace bz::engine::graphics {
-
-namespace errors {
+namespace bz::engine::errors {
 struct GLVertexArrayError : public core::Error {
 	using Error::Error;
 };
 
-struct GLVertexArrayGeneralError : public GLVertexArrayError {
-	GLVertexArrayGeneralError()
+struct GLVertexArrayCreateError : public GLVertexArrayError {
+	GLVertexArrayCreateError()
 		: GLVertexArrayError("Failed to create GLVertexArray") {}
 };
-} // namespace errors
+} // namespace bz::engine::errors
+
+namespace bz::engine::graphics {
 
 class GLVertexArray : public VertexArray {
+private:
+	GLVertexArray(unsigned int id);
+
 public:
 	~GLVertexArray();
 
 	GLVertexArray(const GLVertexArray &) = delete;
 	GLVertexArray &operator=(const GLVertexArray &) = delete;
 
-	GLVertexArray(GLVertexArray &&) = default;
-	GLVertexArray &operator=(GLVertexArray &&) = default;
-
-private:
-	GLVertexArray(unsigned int id);
+	GLVertexArray(GLVertexArray &&) noexcept;
+	GLVertexArray &operator=(GLVertexArray &&) noexcept;
 
 public:
 	static core::Result<GLVertexArray, errors::GLVertexArrayError> create();
@@ -48,6 +50,11 @@ public:
 	GLVertexArrayCtx(GLVertexArray &vao) : _vao{vao} { _vao.bind(); }
 	~GLVertexArrayCtx() { _vao.unbind(); }
 
+	void add(GLBuffer &vbo) {
+		vbo.bind();
+		_vbos.emplace_back(vbo);
+	}
+
 	GLVertexArrayCtx(const GLVertexArrayCtx &) = delete;
 	GLVertexArrayCtx &operator=(const GLVertexArrayCtx &) = delete;
 
@@ -56,6 +63,7 @@ public:
 
 private:
 	GLVertexArray &_vao;
+	std::vector<std::reference_wrapper<GLBuffer>> _vbos;
 };
 
 } // namespace bz::engine::graphics

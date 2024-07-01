@@ -6,8 +6,7 @@
 
 #include "geometria.h"
 
-
-using namespace bz::engine::engine;
+using namespace bz::engine;
 using namespace bz::core;
 
 int main(BZ_UNUSED int argc, BZ_UNUSED char *argv[]) {

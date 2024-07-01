@@ -3,25 +3,39 @@
 #include <core/macros.h>
 
 #include "GLFW/glfw3.h"
+#include "common/input/key_defs.h"
+#include "core/logger.h"
+#include "gl.h"
 #include "graphics/gl_window.h"
 #include "graphics/window_data.h"
 
-using namespace bz::engine::graphics::errors;
+using namespace bz::engine::errors;
 
 namespace bz::engine::graphics {
 
-GLWindow::GLWindowPrivate::GLWindowPrivate() = default;
+GLWindow::GLWindowPrivate::GLWindowPrivate() : GLWindowPrivate(WindowData{}) {}
 
 GLWindow::GLWindowPrivate::GLWindowPrivate(const WindowData &windowData)
-	: _data(windowData) {}
+	: _data(windowData) {
+
+	// Increment the instance count
+	_instanceCount.fetch_add(1);
+	bzTrace() << "Window created. Instance count: " << _instanceCount.load();
+}
 
 GLWindow::GLWindowPrivate::~GLWindowPrivate() {
-	// Hopefully, the unique_ptr will take care of _window
+	// If window is nullptr, then the pointer was moved
+	if (!_window) {
+		return;
+	}
 
 	// If we are the last instance, terminate GLFW
 	if (_instanceCount.fetch_sub(1) == 1) {
 		glfwTerminate();
+		bzTrace() << "GLFW terminated";
 	}
+
+	bzTrace() << "Window destroyed. Instance count: " << _instanceCount.load();
 }
 
 core::Result<GLWindow::GLWindowPrivate, GLWindowError>
@@ -30,7 +44,7 @@ GLWindow::GLWindowPrivate::create(const WindowData &windowData) {
 	 * Initialize GLFW
 	 */
 
-	if (glfwInit() != GL_TRUE) {
+	if (const auto status = glfwInit(); status != GL_TRUE) {
 		return GLFWInitFailed{};
 	}
 
@@ -42,11 +56,11 @@ GLWindow::GLWindowPrivate::create(const WindowData &windowData) {
 	// 4x antialiasing
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
-	// We want OpenGL 3.3
+	// We want OpenGL 3.3 or higher
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
-	// We don't want the old OpenGL
+	// Enable core profile
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 #if BZ_PLATFORM_(MACOS)
@@ -55,10 +69,9 @@ GLWindow::GLWindowPrivate::create(const WindowData &windowData) {
 #endif
 
 	// Create a windowed mode window and its OpenGL context
-	auto window = std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)>(
-		glfwCreateWindow(windowData.width, windowData.height, "Hello World",
-	                     nullptr, nullptr),
-		glfwDestroyWindow);
+	auto window = std::unique_ptr<GLFWwindow, GLFWwindowDeleter>(
+		glfwCreateWindow(windowData.width, windowData.height, windowData.title,
+	                     nullptr, nullptr));
 
 	if (!window) {
 		return GLFWCreateFailed{};
@@ -73,7 +86,7 @@ GLWindow::GLWindowPrivate::create(const WindowData &windowData) {
 	// Needed for core profile
 	glewExperimental = GL_TRUE;
 
-	if (const auto success = glewInit(); success != GLEW_OK) {
+	if (const auto status = glewInit(); status != GLEW_OK) {
 		return GLEWInitFailed{};
 	}
 
@@ -90,11 +103,10 @@ GLWindow::GLWindowPrivate::create(const WindowData &windowData) {
 	// Move the window to the impl
 	impl->_window = std::move(window);
 
-	// Increment the instance count
-	_instanceCount.fetch_add(1);
-
 	return std::move(*impl);
 }
+
+const WindowData &GLWindow::GLWindowPrivate::data() const { return _data; }
 
 void GLWindow::GLWindowPrivate::open() { glfwShowWindow(_window.get()); }
 bool GLWindow::GLWindowPrivate::isOpen() const {
@@ -124,11 +136,36 @@ bool GLWindow::GLWindowPrivate::isMaximised() const {
 	return glfwGetWindowAttrib(_window.get(), GLFW_MAXIMIZED) == GL_TRUE;
 }
 
+void GLWindow::GLWindowPrivate::restore() {
+	glfwWindowHint(GLFW_MAXIMIZED, GL_FALSE);
+	glfwRestoreWindow(_window.get());
+}
+bool GLWindow::GLWindowPrivate::isRestored() const {
+	return glfwGetWindowAttrib(_window.get(), GLFW_MAXIMIZED) == GL_FALSE;
+}
+
+void GLWindow::GLWindowPrivate::fullscreen() {
+	glfwWindowHint(GLFW_MAXIMIZED, GL_FALSE);
+	glfwSetWindowMonitor(_window.get(), nullptr, 0, 0, _data.width,
+	                     _data.height, GLFW_DONT_CARE);
+}
+
+bool GLWindow::GLWindowPrivate::isFullscreen() const {
+	return glfwGetWindowMonitor(_window.get()) != nullptr;
+}
+
 void GLWindow::GLWindowPrivate::onResize(std::function<void()> onResize) {
 	_onResize = std::move(onResize);
 }
 
-void GLWindow::GLWindowPrivate::update() { glfwSwapBuffers(_window.get()); }
+void GLWindow::GLWindowPrivate::onKeyInput(
+	std::function<void(const common::KeyInput &)> onKeyInput) {
+	_onKey = std::move(onKeyInput);
+}
+
+void GLWindow::GLWindowPrivate::swapBuffers() {
+	glfwSwapBuffers(_window.get());
+}
 
 // NOLINTBEGIN(readability-convert-member-functions-to-static)
 void GLWindow::GLWindowPrivate::pollEvents() { glfwPollEvents(); }
@@ -144,9 +181,16 @@ void GLWindow::GLWindowPrivate::_keyCallback(GLFWwindow *window, int key,
 
 void GLWindow::GLWindowPrivate::_keyCallback(int key, int scancode, int action,
                                              int mods) {
-	BZ_IGNORED(key, scancode, action, mods);
+	if (_onKey) {
+		common::KeyModifiers keyMods;
+		if ((mods & GLFW_MOD_SHIFT) != 0) {
+			keyMods |= common::KeyModifier::Shift;
+		}
 
-	// TOOO: Translate the key, scancode, action and mods into a key event
+		_onKey({static_cast<common::Key>(key),
+		        {static_cast<common::KeyModifier>(mods)},
+		        static_cast<common::Action>(action)});
+	}
 }
 
 void GLWindow::GLWindowPrivate::_resizeCallback(GLFWwindow *window, int width,

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "graphics/gl_shader_program.h"
 #include "graphics/renderer.h"
 #include "graphics/scene.h"
 
@@ -8,12 +9,11 @@
 
 #include <memory>
 
-namespace bz::engine::graphics {
-
-namespace errors {
+namespace bz::engine::errors {
 struct RendererError : core::Error {};
+} // namespace bz::engine::errors
 
-} // namespace errors
+namespace bz::engine::graphics {
 
 class GLRenderer : public Renderer {
 public:
@@ -31,14 +31,10 @@ public:
 	create();
 
 public:
-	[[deprecated]] void render(Mesh *mesh) override;
 	void render(Window *window, Scene *scene) override;
 
 private:
-	void clear();
-
-private:
-	Window *_window{nullptr};
+	void reset(Window *window);
 };
 
 } // namespace bz::engine::graphics

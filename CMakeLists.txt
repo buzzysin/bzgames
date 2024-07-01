@@ -23,7 +23,7 @@ bz_intf(strict
   PARENT  
     args
   COMPILE_ARGS 
-    -Wall -Wextra -Werror -Wpedantic
+    -Wall -Wextra -Werror -Wpedantic -Wno-unused-parameter
 )
 
 # Third party libraries

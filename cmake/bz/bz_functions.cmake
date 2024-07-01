@@ -35,19 +35,22 @@ function(bz_deps target)
     set(target_name bz_${target})
     bz_alias_name(target_alias ${target_name} PARENT "${bz_target_PARENT}")
 
-    message(STATUS "[bz_deps]: ${target} ->  Dependencies - [${bz_target_DEPENDS}]")    
-    target_link_libraries(${target_name} ${BZ_SCOPE} ${bz_target_DEPENDS})
-endfunction()
-
-# Common target pre-setup
-function (bz_pre target)
-    set(options)
-    set(oneValueArgs PARENT)
-    set(multiValueArgs DEPENDS COMPILE_ARGS)
-    cmake_parse_arguments(bz_target "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
-
-    set(target_name bz_${target})
-    bz_alias_name(target_alias ${target_name} PARENT "${bz_target_PARENT}")
+    message(STATUS "[bz_deps]: ${target} -> Dependencies - [${bz_target_DEPENDS}]")  
+    
+    # if a dep starts with private: then it is a private dependency
+    foreach(dep ${bz_target_DEPENDS})
+        if (dep MATCHES "^private:")
+            string(SUBSTRING ${dep} 8 -1 dep)
+            set(BZ_SCOPE_TEMP "PRIVATE")
+        else()
+            set(BZ_SCOPE_TEMP "${BZ_SCOPE}")
+        endif()
+        
+        message(STATUS "[bz_deps]: ${target} -> Adding dependency ${dep} to ${target_name}")
+        target_link_libraries(${target_name} ${BZ_SCOPE_TEMP} ${dep})
+    endforeach()
+      
+    # target_link_libraries(${target_name} ${BZ_SCOPE} ${bz_target_DEPENDS})
 endfunction()
 
 # Common target post-setup

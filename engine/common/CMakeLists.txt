@@ -1,8 +1,8 @@
-bz_lib(common # To avoid name collision with the core library
+bz_lib(common
   PARENT 
     engine
   DEPENDS
     bz::core
   SOURCES
-    src/game.cpp
+    src/input/key_input.cpp
 )

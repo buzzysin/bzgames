@@ -17,9 +17,17 @@ public:
 	Renderer(Renderer &&) = default;
 	Renderer &operator=(Renderer &&) = default;
 
+	// Developer interface
 public:
-	[[deprecated]] virtual void render(Mesh *mesh) = 0;
+	void setShader(std::unique_ptr<Shader> shader);
+	Shader *shader();
+
+	// Engine interface
+public:
 	virtual void render(Window *window, Scene *scene) = 0;
+
+private:
+	std::unique_ptr<Shader> _shader{nullptr};
 };
 
 } // namespace bz::engine::graphics

@@ -1,5 +1,8 @@
 #pragma once
 
+// False positive:
+// NOLINTBEGIN(bugprone-forwarding-reference-overload)
+
 #include "result.h"
 
 #include <stdexcept>
@@ -15,7 +18,7 @@ constexpr Result<T, E>::Result(const U &value) : _value(value) {}
 
 template <typename T, typename E>
 template <typename U, std::enable_if_t<IsResultVType<Result<T, E>, U>, int>>
-constexpr Result<T, E>::Result(U &&value) : _value(std::move(value)) {}
+constexpr Result<T, E>::Result(U &&value) : _value(std::forward<U>(value)) {}
 
 template <typename T, typename E>
 template <typename F, std::enable_if_t<IsResultEType<Result<T, E>, F>, int>>
@@ -23,7 +26,7 @@ constexpr Result<T, E>::Result(const F &error) : _error(error) {}
 
 template <typename T, typename E>
 template <typename F, std::enable_if_t<IsResultEType<Result<T, E>, F>, int>>
-constexpr Result<T, E>::Result(F &&error) : _error(std::move(error)) {}
+constexpr Result<T, E>::Result(F &&error) : _error(std::forward<F>(error)) {}
 
 // Copy
 
@@ -53,7 +56,7 @@ constexpr Result<T, E> &Result<T, E>::operator=(Result<U, F> &&other) noexcept {
 template <typename T, typename E>
 template <typename U, std::enable_if_t<IsResultVType<Result<T, E>, U>, int>>
 constexpr Result<T, E> &Result<T, E>::operator=(U &&value) {
-	_value = std::move(value);
+	_value = std::forward<U>(value);
 	_error = std::nullopt;
 	return *this;
 }
@@ -61,7 +64,7 @@ constexpr Result<T, E> &Result<T, E>::operator=(U &&value) {
 template <typename T, typename E>
 template <typename F, std::enable_if_t<IsResultEType<Result<T, E>, F>, int>>
 constexpr Result<T, E> &Result<T, E>::operator=(F &&error) {
-	_error = std::move(error);
+	_error = std::forward<F>(error);
 	_value = std::nullopt;
 	return *this;
 }
@@ -243,23 +246,26 @@ Result<T, E>::orElse(C *&&context, M &&transform, Args &&...args) const {
 
 template <typename T, typename E>
 constexpr T &Result<T, E>::operator*() {
-	if (hasValue())
+	if (hasValue()) {
 		return value();
+	}
 
 	throw std::runtime_error("Result does not contain a value");
 }
 template <typename T, typename E>
 constexpr const T &Result<T, E>::operator*() const {
-	if (hasValue())
+	if (hasValue()) {
 		return value();
+	}
 
 	throw std::runtime_error("Result does not contain a value");
 }
 
 template <typename T, typename E>
 constexpr T *Result<T, E>::operator->() {
-	if (hasValue())
+	if (hasValue()) {
 		return &value();
+	}
 
 	throw std::runtime_error("Result does not contain a value");
 }
@@ -277,11 +283,13 @@ template <typename T, typename E>
 template <typename U, typename F,
           std::enable_if_t<IsResultFullType<Result<T, E>, U, F>, int>>
 constexpr bool Result<T, E>::operator==(const Result<U, F> &other) const {
-	if (hasValue() && other.hasValue())
+	if (hasValue() && other.hasValue()) {
 		return value() == other.value();
+	}
 
-	if (hasError() && other.hasError())
+	if (hasError() && other.hasError()) {
 		return error() == other.error();
+	}
 
 	return false;
 }
@@ -323,3 +331,5 @@ constexpr Result<T, E>::operator bool() const {
 }
 
 } // namespace bz::core
+
+// NOLINTEND(bugprone-forwarding-reference-overload)

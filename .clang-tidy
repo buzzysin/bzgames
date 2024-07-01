@@ -1,0 +1,15 @@
+Checks: >
+  clang-diagnostic-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*,
+  modernize-*,
+  performance-*,
+  bugprone-*,
+  readability-*,
+  -modernize-use-trailing-return-type,
+  -readability-redundant-access-specifiers,
+  -bugprone-easily-swappable-parameters
+
+CheckOptions:
+  - { key: readability-identifier-length.IgnoredVariableNames, value: '^(id)$' }
+

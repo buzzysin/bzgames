@@ -3,6 +3,7 @@ bz_lib(graphics
     engine
   DEPENDS
     bz::core
+    bz::engine::common
     OpenGL
     GLEW
     glfw
@@ -11,7 +12,10 @@ bz_lib(graphics
     src/gl_vertex_array.cpp
     src/gl_vertex_buffer.cpp
     src/gl_renderer.cpp
-    src/gl_shader.cpp
+    src/gl_shader_program.cpp
     src/gl_window_private.cpp
     src/gl_window.cpp
+    src/gl_scene.cpp
+    src/scene.cpp
+    src/renderer.cpp
 )

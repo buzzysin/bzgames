@@ -8,9 +8,7 @@
 #include "graphics/window.h"
 #include "graphics/window_data.h"
 
-namespace bz::engine::graphics {
-
-namespace errors {
+namespace bz::engine::errors {
 struct GLWindowError : bz::core::Error {
 	GLWindowError() = default;
 	GLWindowError(const char *what) : Error(what) {}
@@ -26,7 +24,9 @@ struct GLFWCreateFailed : public GLWindowError {
 struct GLEWInitFailed : public GLWindowError {
 	GLEWInitFailed() : GLWindowError("GLEW initialization failed") {}
 };
-} // namespace errors
+} // namespace bz::engine::errors
+
+namespace bz::engine::graphics {
 
 class GLWindow : public Window {
 
@@ -50,6 +50,8 @@ public:
 	create(const WindowData &windowData);
 
 public:
+	const WindowData &data() const override;
+	
 	void open() override;
 	[[nodiscard]] bool isOpen() const override;
 
@@ -71,6 +73,8 @@ public:
 
 public:
 	void onResize(std::function<void()> onResize) override;
+	void onKeyInput(
+		std::function<void(const common::KeyInput &)> onKeyInput) override;
 
 public:
 	void swapBuffers() override;

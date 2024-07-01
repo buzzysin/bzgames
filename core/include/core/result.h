@@ -54,8 +54,8 @@ public:
 
 	// Check/Get
 
-	constexpr bool hasValue() const;
-	constexpr bool hasError() const;
+	[[nodiscard]] constexpr bool hasValue() const;
+	[[nodiscard]] constexpr bool hasError() const;
 
 	constexpr const T &value() const &;
 	constexpr T &value() &;

@@ -1,11 +1,11 @@
 #pragma once
 
+#include "graphics/window_data.h"
+#include <common/input/key_input.h>
 #include <core/result.h>
 #include <functional>
 
 namespace bz::engine::graphics {
-
-namespace errors {}
 
 class Window {
 public:
@@ -19,6 +19,8 @@ public:
 	Window &operator=(Window &&) = default;
 
 public:
+	virtual const WindowData &data() const = 0;
+
 	virtual void open() = 0;
 	[[nodiscard]] virtual bool isOpen() const = 0;
 
@@ -39,6 +41,8 @@ public:
 	[[nodiscard]] virtual bool isHidden() const = 0;
 
 	virtual void onResize(std::function<void()> onResize) = 0;
+	virtual void
+	onKeyInput(std::function<void(const common::KeyInput &)> onKeyInput) = 0;
 
 public:
 	virtual void swapBuffers() = 0;

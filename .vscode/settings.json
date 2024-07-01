@@ -2,7 +2,12 @@
   "C_Cpp.intelliSenseEngine": "disabled",
   "C_Cpp.autoAddFileAssociations": false,
   "C_Cpp.commentContinuationPatterns": ["/**"],
+  "C_Cpp.codeAnalysis.exclude": {
+    "build/**": true
+  },
+  "C_Cpp.autocomplete": "default",
   "files.associations": {
     "*.tpp": "cpp"
-  }
+  },
+  "glsl-canvas.useCompactFormatter": false
 }

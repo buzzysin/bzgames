@@ -1,12 +1,11 @@
 #pragma once
 
 #include "core/result.h"
-#include "graphics/shader.h"
 #include "graphics/shader_data.h"
+#include "graphics/shader_program.h"
+#include <memory>
 
-namespace bz::engine::graphics {
-
-namespace errors {
+namespace bz::engine::errors {
 struct GLShaderError : bz::core::Error {
 	GLShaderError() = default;
 	GLShaderError(const char *message) : Error(message) {}
@@ -46,43 +45,59 @@ struct GLShaderValidateFailed : public GLShaderError {
 		: GLShaderError("Failed to validate shader program") {}
 };
 
-} // namespace errors
+} // namespace bz::engine::errors
+namespace bz::engine::graphics {
 
-class GLShader : public Shader {
+class GLShaderProgram : public Shader {
 public:
-	GLShader() = default;
-	virtual ~GLShader();
+	GLShaderProgram(int programId);
+	virtual ~GLShaderProgram();
 
-	GLShader(const GLShader &) = delete;
-	GLShader &operator=(const GLShader &) = delete;
+	GLShaderProgram(const GLShaderProgram &) = delete;
+	GLShaderProgram &operator=(const GLShaderProgram &) = delete;
 
-	GLShader(GLShader &&) = default;
-	GLShader &operator=(GLShader &&) = default;
-
-private:
-	GLShader(int programId, int vertexShaderId, int fragmentShaderId);
+	GLShaderProgram(GLShaderProgram &&) noexcept;
+	GLShaderProgram &operator=(GLShaderProgram &&) noexcept;
 
 public:
-	static core::Result<GLShader, errors::GLShaderError>
+	static core::Result<std::unique_ptr<GLShaderProgram>, errors::GLShaderError>
 	create(const ShaderData &shaderData);
+
+	[[nodiscard]] int id() const;
 
 public:
 	void bind() override;
 	void unbind() override;
 
-	core::Result<core::Empty, errors::GLShaderError> link();
+	// core::Result<core::Empty, errors::GLShaderError> link();
 
 private:
 	static core::Result<int, errors::GLShaderError>
-	_createShader(int id, int type, const std::string &shaderPath);
+	_createShader(int type, const std::string &shaderPath);
 
 	static core::Fallible<errors::GLShaderError>
-	_linkShader(int id, int vertexShaderId, int fragmentShaderId);
+	_linkShader(int id, const std::vector<int> &shaderId);
 
 private:
-	int _programId;
-	int _vertexShaderId;
-	int _fragmentShaderId;
+	int _programId{};
+	// std::vector<int> _modules;
+};
+
+class GLShaderProgramCtx {
+public:
+	GLShaderProgramCtx(GLShaderProgram &shader) : _shader{shader} {
+		_shader.bind();
+	}
+	~GLShaderProgramCtx() { _shader.unbind(); }
+
+	GLShaderProgramCtx(const GLShaderProgramCtx &) = delete;
+	GLShaderProgramCtx &operator=(const GLShaderProgramCtx &) = delete;
+
+	GLShaderProgramCtx(GLShaderProgramCtx &&) = delete;
+	GLShaderProgramCtx &operator=(GLShaderProgramCtx &&) = delete;
+
+private:
+	GLShaderProgram &_shader;
 };
 
 } // namespace bz::engine::graphics

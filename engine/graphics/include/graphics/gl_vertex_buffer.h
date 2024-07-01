@@ -4,38 +4,41 @@
 #include "graphics/vertex_buffer.h"
 
 #include <core/error.h>
+#include <functional>
 #include <vector>
 
-namespace bz::engine::graphics {
-
-namespace errors {
+namespace bz::engine::errors {
 struct GLVertexBufferError : public core::Error {
 	using Error::Error;
 };
 
-struct GLVertexBufferGeneralError : public GLVertexBufferError {
-	GLVertexBufferGeneralError()
-		: GLVertexBufferError{"GLVertexBuffer general error"} {}
+struct GLVertexBufferCreateError : public GLVertexBufferError {
+	GLVertexBufferCreateError()
+		: GLVertexBufferError{"Failed to create GLVertexBuffer"} {}
 };
-} // namespace errors
+} // namespace bz::engine::errors
 
-class GLVertexBuffer : public VertexBuffer {
+namespace bz::engine::graphics {
+
+class GLBuffer : public VertexBuffer {
 public:
-	~GLVertexBuffer() override;
+	~GLBuffer() override;
 
-	GLVertexBuffer(const GLVertexBuffer &) = delete;
-	GLVertexBuffer &operator=(const GLVertexBuffer &) = delete;
+	GLBuffer(const GLBuffer &) = delete;
+	GLBuffer &operator=(const GLBuffer &) = delete;
 
-	GLVertexBuffer(GLVertexBuffer &&) = default;
-	GLVertexBuffer &operator=(GLVertexBuffer &&) = default;
+	GLBuffer(GLBuffer &&) noexcept;
+	GLBuffer &operator=(GLBuffer &&) noexcept;
 
 private:
-	GLVertexBuffer(unsigned int id);
+	GLBuffer(unsigned int id, unsigned int type);
 
 public:
-	static core::Result<GLVertexBuffer, errors::GLVertexBufferError> create();
+	static core::Result<GLBuffer, errors::GLVertexBufferError>
+	create(unsigned int type);
 
 	unsigned int id() const;
+	unsigned int type() const;
 
 public:
 	void bind();
@@ -43,21 +46,22 @@ public:
 
 private:
 	unsigned int _id{0};
+	unsigned int _type{0};
 };
 
-class GLVertexBufferCtx {
+class GLBufferCtx {
 public:
-	GLVertexBufferCtx(GLVertexBuffer &vbo) : _vbo{vbo} { _vbo.bind(); }
-	~GLVertexBufferCtx() { _vbo.unbind(); }
+	GLBufferCtx(GLBuffer &buffer) : _buffer{buffer} { _buffer.bind(); }
+	~GLBufferCtx() { _buffer.unbind(); }
 
-	GLVertexBufferCtx(const GLVertexBufferCtx &) = delete;
-	GLVertexBufferCtx &operator=(const GLVertexBufferCtx &) = delete;
+	GLBufferCtx(const GLBufferCtx &) = delete;
+	GLBufferCtx &operator=(const GLBufferCtx &) = delete;
 
-	GLVertexBufferCtx(GLVertexBufferCtx &&) = delete;
-	GLVertexBufferCtx &operator=(GLVertexBufferCtx &&) = delete;
+	GLBufferCtx(GLBufferCtx &&) = delete;
+	GLBufferCtx &operator=(GLBufferCtx &&) = delete;
 
 private:
-	GLVertexBuffer &_vbo;
+	GLBuffer &_buffer;
 };
 
 } // namespace bz::engine::graphics

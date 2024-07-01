@@ -6,8 +6,14 @@
 #include "gl.h"
 
 #include <atomic>
+#include <mutex>
 
 namespace bz::engine::graphics {
+
+struct GLFWwindowDeleter {
+	void operator()(GLFWwindow *window) const { glfwDestroyWindow(window); }
+};
+using GLFWWindowPtr = std::unique_ptr<GLFWwindow, GLFWwindowDeleter>;
 
 class GLWindow::GLWindowPrivate {
 public:
@@ -18,14 +24,17 @@ public:
 	GLWindowPrivate(const GLWindowPrivate &) = delete;
 	GLWindowPrivate &operator=(const GLWindowPrivate &) = delete;
 
-	GLWindowPrivate(GLWindowPrivate &&) = default;
-	GLWindowPrivate &operator=(GLWindowPrivate &&) = default;
+	GLWindowPrivate(GLWindowPrivate &&) noexcept = default;
+	GLWindowPrivate &operator=(GLWindowPrivate &&) noexcept = default;
 
 public:
 	static core::Result<GLWindowPrivate, errors::GLWindowError>
 	create(const WindowData &windowData);
 
+	// Developer API
 public:
+	const WindowData &data() const;
+	
 	void open();
 	[[nodiscard]] bool isOpen() const;
 
@@ -45,32 +54,32 @@ public:
 	void fullscreen();
 	[[nodiscard]] bool isFullscreen() const;
 
-public:
 	void onResize(std::function<void()> onResize);
-	void update();
-	void pollEvents();
-	bool shouldClose() const;
+	void onKeyInput(std::function<void(const common::KeyInput &)> onKeyInput);
 
+	// Engine API
+public:
+	void swapBuffers();
+	void pollEvents();
+
+	// Callbacks
 private:
 	static void _keyCallback(GLFWwindow *window, int key, int scancode,
 	                         int action, int mods);
-	void _keyCallback(int key, int scancode, int action, int mods);
-
 	static void _resizeCallback(GLFWwindow *window, int width, int height);
+
+	void _keyCallback(int key, int scancode, int action, int mods);
 	void _resizeCallback(int width, int height);
 
 private:
-	using GLFWWindowPtr =
-		std::unique_ptr<GLFWwindow, decltype(&glfwDestroyWindow)>;
-
 	std::uint8_t _id{0};
 	WindowData _data{};
 
 	static inline std::atomic_uint _instanceCount = ATOMIC_VAR_INIT(0);
-	static inline std::unordered_map<uint, void *> _instances;
-	GLFWWindowPtr _window{nullptr, glfwDestroyWindow};
 
-	std::function<void()> _onKey;
+	GLFWWindowPtr _window{nullptr};
+
+	std::function<void(const common::KeyInput &)> _onKey;
 	std::function<void()> _onResize;
 };
 

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <common/game.h>
 #include <core/result.h>
+#include <engine/game.h>
 
 #include <memory>
 
-class DummyGame : public bz::engine::common::Game {
+class DummyGame : public bz::engine::Game {
 public:
-	DummyGame() = default;
-	virtual ~DummyGame() = default;
+	DummyGame();
+	virtual ~DummyGame();
 
 	DummyGame(const DummyGame &) = delete;
 	DummyGame &operator=(const DummyGame &) = delete;
@@ -18,6 +18,15 @@ public:
 
 public:
 	static bz::core::Result<std::unique_ptr<DummyGame>,
-	                        bz::engine::common::errors::GameError>
+	                        bz::engine::errors::GameError>
 	create();
+
+public:
+	void startup(bz::engine::Engine *engine,
+	             bz::engine::graphics::Window *window,
+	             bz::engine::graphics::Scene *scene,
+	             bz::engine::graphics::Renderer *renderer) override;
+
+	void input(bz::engine::graphics::Window *window,
+	           bz::engine::graphics::Scene *scene, bool inputHandled) override;
 };

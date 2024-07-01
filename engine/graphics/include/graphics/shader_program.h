@@ -4,7 +4,6 @@
 
 namespace bz::engine::graphics {
 
-
 class Shader {
 public:
 	Shader() = default;

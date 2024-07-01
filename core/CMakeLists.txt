@@ -1,6 +1,6 @@
 bz_lib(core
   DEPENDS
-    bz::args::strict
+    private:bz::args::strict
   SOURCES
-    # Result
+    src/logger.cpp
 )

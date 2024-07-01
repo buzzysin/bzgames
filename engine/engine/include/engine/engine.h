@@ -1,25 +1,27 @@
 #pragma once
 
+#include <atomic>
 #include <memory>
 #include <thread>
 
-#include <common/game.h>
 #include <core/error.h>
 #include <graphics/gl_window.h>
 #include <graphics/window_data.h>
 
-#include "engine/update_policy.h"
 #include "engine_data.h"
+#include "game.h"
+#include "graphics/renderer.h"
 
-namespace bz::engine::engine {
+namespace bz::engine::errors {
 
-namespace errors {
 class EngineError : public bz::core::Error {
 public:
-	EngineError(const graphics::errors::GLWindowError &error)
-		: Error{error.what()} {}
+	EngineError(const errors::GLWindowError &error) : Error{error.what()} {}
 };
-} // namespace errors
+
+} // namespace bz::engine::errors
+
+namespace bz::engine {
 
 class Engine {
 public:
@@ -32,21 +34,29 @@ public:
 	Engine(Engine &&) = default;
 	Engine &operator=(Engine &&) = default;
 
+	// Creation
 public:
 	static bz::core::Result<std::unique_ptr<Engine>, errors::EngineError>
-	create(const EngineData &data, std::unique_ptr<common::Game> game);
+	create(const EngineData &data, std::unique_ptr<Game> game);
 
+	// Engine api
 public:
 	void run();
+	void setScene(std::unique_ptr<graphics::Scene> scene);
+	void setRenderer(std::unique_ptr<graphics::Renderer> renderer);
 
+	// Private api
 private:
 	void _run();
 
 private:
-	EngineData _data;
+	EngineData _data{};
 	std::unique_ptr<graphics::Window> _window{nullptr};
-	std::unique_ptr<common::Game> _game{nullptr};
+	std::unique_ptr<graphics::Renderer> _renderer{nullptr};
+	std::unique_ptr<graphics::Scene> _scene{nullptr};
+	std::unique_ptr<Game> _game{nullptr};
 	std::thread _thread;
+	std::atomic_bool _running{false};
 };
 
-} // namespace bz::engine::engine
+} // namespace bz::engine

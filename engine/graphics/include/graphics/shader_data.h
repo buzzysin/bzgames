@@ -1,10 +1,16 @@
 #pragma once
 
+#include <string>
+#include <vector>
 namespace bz::engine::graphics {
 
+struct ShaderModule {
+	int type;
+	std::string path;
+};
+
 struct ShaderData {
-	const char *vertexShaderPath;
-	const char *fragmentShaderPath;
+	std::vector<ShaderModule> modules;
 };
 
 } // namespace bz::engine::graphics

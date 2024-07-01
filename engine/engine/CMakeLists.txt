@@ -9,4 +9,5 @@ bz_lib(engine
     bz::engine::physics
   SOURCES
     src/engine.cpp
+    src/game.cpp
   )
