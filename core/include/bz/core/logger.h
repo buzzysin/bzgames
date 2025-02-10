@@ -7,11 +7,11 @@
 #include <type_traits>
 #include <unordered_map>
 
-#include "core/logger_traits.h"
+#include "logger_traits.h"
 
 namespace bz::core::logger {
 
-enum class Severity { Debug, Info, Warning, Error };
+enum class Severity { Trace, Debug, Info, Warning, Error };
 
 class Logger {
 public:
@@ -30,14 +30,22 @@ public:
 public:
 	template <typename T, std::enable_if_t<IsFormattable<T>, int> = 0>
 	Logger &operator<<(const T &value) {
+		// This is a no-op if the severity is lower than the global severity
+		if (_severity < _globalSeverity) {
+			return *this;
+		}
+
 		_stream << LogFormat<T>::format(value);
 		return *this;
 	}
 
+	// Public static interface
+public:
+	static void setSeverity(Severity severity);
+
 	// Private interface
 private:
 	void _log(Severity severity);
-
 	static std::string_view _fetchColor(const std::string_view &filename);
 
 private:
@@ -47,8 +55,8 @@ private:
 	Severity _severity;
 	std::ostringstream _stream;
 
-	// Map from filename to color (each file will always have the same
-	// color)
+	// Static members
+	static Severity _globalSeverity;
 	static std::unordered_map<std::string_view, std::string_view>
 		_fileColourMap;
 	static std::mutex _fileColourMapMutex;
@@ -59,3 +67,11 @@ private:
 // NOLINTNEXTLINE
 #define bzLog(SEVERITY)                                                        \
 	::bz::core::logger::Logger(__FILE__, __LINE__, __FUNCTION__, {SEVERITY})
+
+// NOLINTBEGIN(cppcoreguidelines-macro-usage)
+#define bzTrace() bzLog(::bz::core::logger::Severity::Trace)
+#define bzDebug() bzLog(::bz::core::logger::Severity::Debug)
+#define bzInfo() bzLog(::bz::core::logger::Severity::Info)
+#define bzWarning() bzLog(::bz::core::logger::Severity::Warning)
+#define bzError() bzLog(::bz::core::logger::Severity::Error)
+// NOLINTEND(cppcoreguidelines-macro-usage)

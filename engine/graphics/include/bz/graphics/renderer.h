@@ -1,8 +1,8 @@
 #pragma once
 
-#include "graphics/mesh.h"
-#include "graphics/scene.h"
-#include "graphics/window.h"
+#include "bz/graphics/mesh.h"
+#include "bz/graphics/scene.h"
+#include "bz/graphics/window.h"
 
 namespace bz::engine::graphics {
 

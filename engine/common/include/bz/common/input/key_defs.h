@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/flags.h>
+#include <bz/core/flags.h>
 
 namespace bz::engine::common {
 

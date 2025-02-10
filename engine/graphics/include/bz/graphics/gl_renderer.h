@@ -1,11 +1,11 @@
 #pragma once
 
-#include "graphics/gl_shader_program.h"
-#include "graphics/renderer.h"
-#include "graphics/scene.h"
+#include "bz/graphics/gl_shader_program.h"
+#include "bz/graphics/renderer.h"
+#include "bz/graphics/scene.h"
 
-#include <core/error.h>
-#include <core/result.h>
+#include <bz/core/error.h>
+#include <bz/core/result.h>
 
 #include <memory>
 

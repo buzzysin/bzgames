@@ -5,8 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "graphics/shader_program.h"
-#include "graphics/window.h"
+#include "bz/graphics/shader_program.h"
 #include "mesh.h"
 
 namespace bz::engine::graphics {
@@ -24,18 +23,18 @@ public:
 
 	// Developer interface
 public:
-	void addMesh(const std::string &name, std::shared_ptr<Mesh> mesh);
+	void addMesh(const std::string &name, std::unique_ptr<Mesh> mesh);
 
-	Mesh* getMesh(const std::string &name);
+	Mesh *getMesh(const std::string &name);
 
-	std::vector<std::shared_ptr<Mesh>> meshes();
+	std::vector<Mesh*> meshes();
 
 	// Engine interface
 public:
 	// virtual void render(Window *window, Scene *scene) = 0;
 
 private:
-	std::unordered_map<std::string, std::shared_ptr<Mesh>> _meshes;
+	std::unordered_map<std::string, std::unique_ptr<Mesh>> _meshes;
 	std::unique_ptr<Shader> _shader{nullptr};
 };
 

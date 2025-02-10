@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/error.h>
+#include <bz/core/error.h>
 
 namespace bz::engine::graphics {
 

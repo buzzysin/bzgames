@@ -4,13 +4,13 @@
 #include <memory>
 #include <thread>
 
-#include <core/error.h>
-#include <graphics/gl_window.h>
-#include <graphics/window_data.h>
+#include <bz/core/error.h>
+#include <bz/graphics/gl_window.h>
+#include <bz/graphics/window_data.h>
 
+#include "bz/graphics/renderer.h"
 #include "engine_data.h"
 #include "game.h"
-#include "graphics/renderer.h"
 
 namespace bz::engine::errors {
 

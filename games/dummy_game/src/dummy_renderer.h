@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graphics/gl_renderer.h"
+#include "bz/graphics/gl_renderer.h"
 
 class DummyRenderer : public bz::engine::graphics::GLRenderer {
 public:

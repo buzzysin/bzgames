@@ -1,8 +1,8 @@
 
 #include <iostream>
 
-#include <core/macros.h>
-#include <engine/engine.h>
+#include <bz/core/macros.h>
+#include <bz/engine/engine.h>
 
 #include "geometria.h"
 

@@ -1,11 +1,11 @@
 #include "dummy_game.h"
 
-#include "core/logger.h"
+#include "bz/core/logger.h"
 #include "dummy_renderer.h"
 #include "dummy_scene.h"
 
-#include "engine/engine.h"
-#include <core/result.h>
+#include <bz/engine/engine.h>
+#include <bz/core/result.h>
 #include <memory>
 
 using namespace bz::core;

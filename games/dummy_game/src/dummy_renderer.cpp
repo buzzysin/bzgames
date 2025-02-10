@@ -2,8 +2,8 @@
 
 #include <GL/gl.h>
 
-#include <core/logger.h>
-#include <graphics/gl_shader_program.h>
+#include <bz/core/logger.h>
+#include <bz/graphics/gl_shader_program.h>
 
 using namespace bz::engine::graphics;
 
@@ -15,7 +15,8 @@ DummyRenderer::DummyRenderer() {
 	}});
 
 	if (tryShaderProgram.hasError()) {
-		bzLog() << "Failed to create shader: " << tryShaderProgram.error().what();
+		bzLog() << "Failed to create shader: "
+				<< tryShaderProgram.error().what();
 		return;
 	}
 

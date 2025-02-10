@@ -1,13 +1,12 @@
 #include "gl_window_private.h"
 
-#include <core/macros.h>
+#include <bz/core/macros.h>
 
-#include "GLFW/glfw3.h"
-#include "common/input/key_defs.h"
-#include "core/logger.h"
+#include "bz/common/input/key_defs.h"
+#include "bz/core/logger.h"
+#include "bz/graphics/gl_window.h"
+#include "bz/graphics/window_data.h"
 #include "gl.h"
-#include "graphics/gl_window.h"
-#include "graphics/window_data.h"
 
 using namespace bz::engine::errors;
 

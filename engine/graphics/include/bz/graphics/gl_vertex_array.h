@@ -1,9 +1,9 @@
 #pragma once
 
-#include "graphics/gl_vertex_buffer.h"
-#include "graphics/vertex_array.h"
-#include <core/error.h>
-#include <core/result.h>
+#include "bz/graphics/gl_vertex_buffer.h"
+#include "bz/graphics/vertex_array.h"
+#include <bz/core/error.h>
+#include <bz/core/result.h>
 #include <functional>
 
 namespace bz::engine::errors {
@@ -35,20 +35,37 @@ public:
 public:
 	static core::Result<GLVertexArray, errors::GLVertexArrayError> create();
 
+	// Actions
 public:
 	void bind();
 	void unbind();
 
+	core::Result<GLBuffer *, errors::GLVertexBufferError>
+	addBuffer(unsigned int type);
+
+	// Accessors
+public:
 	int id() const;
 
+	// Data
 private:
 	unsigned int _id{0};
+	std::vector<GLBuffer> _buffers;
+
+	// Status
+private:
+	bool _bound{false};
 };
 
 class GLVertexArrayCtx {
 public:
 	GLVertexArrayCtx(GLVertexArray &vao) : _vao{vao} { _vao.bind(); }
-	~GLVertexArrayCtx() { _vao.unbind(); }
+	~GLVertexArrayCtx() {
+		_vao.unbind();
+		for (auto &vbo : _vbos) {
+			vbo.get().unbind();
+		}
+	}
 
 	void add(GLBuffer &vbo) {
 		vbo.bind();

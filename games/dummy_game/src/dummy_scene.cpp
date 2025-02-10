@@ -1,8 +1,7 @@
 #include "dummy_scene.h"
 
-#include "core/logger.h"
-#include "graphics/gl_mesh.h"
-#include "graphics/gl_shader_program.h"
+#include "bz/core/logger.h"
+#include "bz/graphics/gl_mesh.h"
 
 #include <GL/glew.h>
 

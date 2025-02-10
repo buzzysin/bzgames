@@ -1,10 +1,10 @@
 // Using the bz::games framework
 #include <iostream>
 
-#include <core/macros.h>
-#include <engine/engine.h>
+#include <bz/core/logger.h>
+#include <bz/core/macros.h>
+#include <bz/engine/engine.h>
 
-#include "core/logger.h"
 #include "dummy_game.h"
 
 using namespace bz::core;
@@ -12,7 +12,7 @@ using namespace bz::core::logger;
 using namespace bz::engine;
 
 int main(BZ_UNUSED int argc, BZ_UNUSED char *argv[]) {
-	Logger::setSeverity(Severity::Info);
+	Logger::setSeverity(Severity::Trace);
 
 	auto engineData = EngineData{};
 	engineData.window.title = "Hello, World!";
@@ -37,8 +37,8 @@ int main(BZ_UNUSED int argc, BZ_UNUSED char *argv[]) {
 }
 
 // // Include standard headers
-// #include "core/logger.h"
-// #include "graphics/../../src/gl.h"
+// #include "bz/core/logger.h"
+// #include "bz/graphics/../../src/gl.h"
 // #include <stdio.h>
 // #include <stdlib.h>
 

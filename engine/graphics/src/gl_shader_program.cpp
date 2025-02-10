@@ -1,6 +1,6 @@
-#include "graphics/gl_shader_program.h"
+#include "bz/graphics/gl_shader_program.h"
 
-#include "core/logger.h"
+#include "bz/core/logger.h"
 #include "gl.h"
 
 #include <GL/gl.h>

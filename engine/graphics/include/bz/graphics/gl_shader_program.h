@@ -1,8 +1,8 @@
 #pragma once
 
-#include "core/result.h"
-#include "graphics/shader_data.h"
-#include "graphics/shader_program.h"
+#include "bz/core/result.h"
+#include "bz/graphics/shader_data.h"
+#include "bz/graphics/shader_program.h"
 #include <memory>
 
 namespace bz::engine::errors {

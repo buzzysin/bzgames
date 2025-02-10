@@ -1,8 +1,8 @@
 #pragma once
 
-#include "graphics/window_data.h"
-#include <common/input/key_input.h>
-#include <core/result.h>
+#include "bz/graphics/window_data.h"
+#include <bz/common/input/key_input.h>
+#include <bz/core/result.h>
 #include <functional>
 
 namespace bz::engine::graphics {

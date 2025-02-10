@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graphics/gl_scene.h"
+#include "bz/graphics/gl_scene.h"
 
 class DummyScene : public bz::engine::graphics::GLScene {
 public:

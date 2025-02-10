@@ -1,7 +1,7 @@
-#include "graphics/gl_window.h"
+#include "bz/graphics/gl_window.h"
 
-#include "core/logger.h"
-#include "core/pimpl.h"
+#include "bz/core/logger.h"
+#include "bz/core/pimpl.h"
 #include "gl_window_private.h"
 
 using namespace bz::core;

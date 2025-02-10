@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graphics/scene.h"
+#include "bz/graphics/scene.h"
 namespace bz::engine::graphics {
 
 class GLScene : public Scene {

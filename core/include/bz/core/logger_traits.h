@@ -6,7 +6,7 @@ namespace bz::core {
 template <typename T>
 struct IsOstreamCompatible_ {
 	static auto test(T *) -> decltype(std::declval<std::ostream &>()
-	                                      << std::declval<std::decay_t<T>>(),
+	                                      << std::declval<T>(),
 	                                  std::true_type{});
 
 	static auto test(...) -> std::false_type;
@@ -24,7 +24,7 @@ static_assert(IsOstreamCompatible<int>);
 static_assert(IsOstreamCompatible<std::string>);
 static_assert(IsOstreamCompatible<std::string_view>);
 static_assert(IsOstreamCompatible<char *>);
-static_assert(IsOstreamCompatible<char[1]>); // NOLINT
+static_assert(IsOstreamCompatible<char[1]>);
 static_assert(IsOstreamCompatible<float>);
 static_assert(IsOstreamCompatible<double>);
 static_assert(!IsOstreamCompatible<void>);

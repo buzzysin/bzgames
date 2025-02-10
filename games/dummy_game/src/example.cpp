@@ -1,6 +1,6 @@
 // // Include standard headers
-// #include "core/logger.h"
-// #include "graphics/../../src/gl.h"
+// #include "bz/core/logger.h"
+// #include "bz/graphics/../../src/gl.h"
 // #include <stdio.h>
 // #include <stdlib.h>
 

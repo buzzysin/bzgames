@@ -1,12 +1,12 @@
 #pragma once
 
-#include <core/error.h>
-#include <core/macros.h>
-#include <core/pimpl.h>
-#include <core/result.h>
+#include <bz/core/error.h>
+#include <bz/core/macros.h>
+#include <bz/core/pimpl.h>
+#include <bz/core/result.h>
 
-#include "graphics/window.h"
-#include "graphics/window_data.h"
+#include "bz/graphics/window.h"
+#include "bz/graphics/window_data.h"
 
 namespace bz::engine::errors {
 struct GLWindowError : bz::core::Error {
@@ -51,7 +51,7 @@ public:
 
 public:
 	const WindowData &data() const override;
-	
+
 	void open() override;
 	[[nodiscard]] bool isOpen() const override;
 

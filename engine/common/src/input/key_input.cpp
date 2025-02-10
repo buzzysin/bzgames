@@ -1,4 +1,4 @@
-#include "common/input/key_input.h"
+#include "bz/common/input/key_input.h"
 
 namespace bz::engine::common {
 

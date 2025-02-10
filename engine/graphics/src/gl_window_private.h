@@ -1,7 +1,7 @@
 #pragma once
 
-#include "graphics/gl_window.h"
-#include "graphics/window_data.h"
+#include "bz/graphics/gl_window.h"
+#include "bz/graphics/window_data.h"
 
 #include "gl.h"
 
@@ -34,7 +34,7 @@ public:
 	// Developer API
 public:
 	const WindowData &data() const;
-	
+
 	void open();
 	[[nodiscard]] bool isOpen() const;
 

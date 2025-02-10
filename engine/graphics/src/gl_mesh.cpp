@@ -1,21 +1,20 @@
-#include "graphics/gl_mesh.h"
+#include "bz/graphics/gl_mesh.h"
 
-#include <core/error.h>
+#include <bz/core/error.h>
 #include <cstring>
 
-#include "core/logger.h"
+#include "bz/core/logger.h"
+#include "bz/graphics/gl_vertex_array.h"
+#include "bz/graphics/mesh_data.h"
 #include "gl.h"
-#include "graphics/gl_vertex_array.h"
-#include "graphics/mesh_data.h"
 
 using namespace bz::core;
 using namespace bz::engine::errors;
 
 namespace bz::engine::graphics {
 
-GLMesh::GLMesh(std::size_t vertexCount, GLVertexArray vao,
-               std::vector<GLBuffer> vbos)
-	: _vertexCount{vertexCount}, _vao{std::move(vao)}, _vbos{std::move(vbos)} {
+GLMesh::GLMesh(std::size_t vertexCount, GLVertexArray vao)
+	: _vertexCount{vertexCount}, _vao{std::move(vao)} {
 	bzTrace() << "Created mesh with " << vertexCount << " vertices";
 }
 
@@ -47,31 +46,17 @@ GLMesh::create(const MeshData &data) {
 	}
 	auto vao = std::move(*tryVao);
 
-	// Vertex buffer
-	auto tryVertexVbo = GLBuffer::create(GL_ARRAY_BUFFER);
-	if (tryVertexVbo.hasError()) {
-		return GLMeshError{tryVertexVbo.error()};
-	}
-	auto vertexVbo = std::move(*tryVertexVbo);
-
-	// Colour buffer
-	auto tryColourVbo = GLBuffer::create(GL_ARRAY_BUFFER);
-	if (tryColourVbo.hasError()) {
-		return GLMeshError{tryColourVbo.error()};
-	}
-	auto colourVbo = std::move(*tryColourVbo);
-
-	// Index buffer
-	auto tryIndexVbo = GLBuffer::create(GL_ELEMENT_ARRAY_BUFFER);
-	if (tryIndexVbo.hasError()) {
-		return GLMeshError{tryIndexVbo.error()};
-	}
-	auto indexVbo = std::move(*tryIndexVbo);
-
 	{ // Bind the vertex array
 		GLVertexArrayCtx vaoCtx{vao};
+
+		// Vertex buffer
+		auto tryVertexVbo = vao.addBuffer(GL_ARRAY_BUFFER);
+		if (tryVertexVbo.hasError()) {
+			return GLMeshError{tryVertexVbo.error()};
+		}
+		auto *vertexVbo = tryVertexVbo.value();
 		{ // Bind the vertex buffer
-			vaoCtx.add(vertexVbo);
+			vaoCtx.add(*vertexVbo);
 
 			// Define the vertex buffer data
 			glBufferData(
@@ -87,8 +72,14 @@ GLMesh::create(const MeshData &data) {
 					  << " bytes to vertex buffer";
 		}
 
+		// Colour buffer
+		auto tryColourVbo = vao.addBuffer(GL_ARRAY_BUFFER);
+		if (tryColourVbo.hasError()) {
+			return GLMeshError{tryColourVbo.error()};
+		}
+		auto *colourVbo = tryColourVbo.value();
 		{ // Bind the colour buffer
-			vaoCtx.add(colourVbo);
+			vaoCtx.add(*colourVbo);
 
 			// Define the colour buffer data
 			glBufferData(
@@ -104,8 +95,14 @@ GLMesh::create(const MeshData &data) {
 					  << " bytes to colour buffer";
 		}
 
+		// Index buffer
+		auto tryIndexVbo = vao.addBuffer(GL_ELEMENT_ARRAY_BUFFER);
+		if (tryIndexVbo.hasError()) {
+			return GLMeshError{tryIndexVbo.error()};
+		}
+		auto *indexVbo = tryIndexVbo.value();
 		{ // Bind the index buffer
-			vaoCtx.add(indexVbo);
+			vaoCtx.add(*indexVbo);
 
 			// Define the index buffer data
 			glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -116,18 +113,13 @@ GLMesh::create(const MeshData &data) {
 			bzTrace() << "Wrote " << data.indices.size() * sizeof(unsigned int)
 					  << " bytes to index buffer";
 		}
-	} // Context is closed, unbinding all buffers implicitly
-
-	std::vector<GLBuffer> vbos;
-	vbos.push_back(std::move(vertexVbo));
-	vbos.push_back(std::move(colourVbo));
-	vbos.push_back(std::move(indexVbo));
+	} // Context is closed.
 
 	// const auto vertexCount = data.vertices.size() / 3;
 	const auto vertexCount = data.indices.size();
 
 	return std::make_unique<GLMesh>(
-		std::move(GLMesh(vertexCount, std::move(vao), std::move(vbos))));
+		std::move(GLMesh(vertexCount, std::move(vao))));
 }
 
 GLVertexArray &GLMesh::getVertexArray() { return _vao; }

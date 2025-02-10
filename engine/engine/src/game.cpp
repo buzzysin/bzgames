@@ -1,3 +1,3 @@
-#include "engine/game.h"
+#include <bz/engine/game.h>
 
 namespace bz::engine::common {}

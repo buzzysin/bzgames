@@ -1,9 +1,9 @@
 #pragma once
 
-#include "graphics/gl_vertex_array.h"
-#include "graphics/gl_vertex_buffer.h"
-#include "graphics/mesh.h"
-#include "graphics/mesh_data.h"
+#include "bz/graphics/gl_vertex_array.h"
+#include "bz/graphics/gl_vertex_buffer.h"
+#include "bz/graphics/mesh.h"
+#include "bz/graphics/mesh_data.h"
 #include <memory>
 
 namespace bz::engine::errors {
@@ -18,8 +18,7 @@ namespace bz::engine::graphics {
 
 class GLMesh : public Mesh {
 public:
-	GLMesh(std::size_t vertexCount, GLVertexArray vao,
-	       std::vector<GLBuffer> vbos);
+	GLMesh(std::size_t vertexCount, GLVertexArray vao);
 	~GLMesh() override;
 
 	GLMesh(const GLMesh &) = delete;

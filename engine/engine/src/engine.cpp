@@ -1,8 +1,8 @@
-#include "engine/engine.h"
+#include "bz/engine/engine.h"
 
-#include "core/logger.h"
-#include "engine/engine_data.h"
-#include <graphics/gl_window.h>
+#include "bz/engine/engine_data.h"
+
+#include <bz/graphics/gl_window.h>
 #include <iostream>
 
 using namespace bz::core;
@@ -58,7 +58,8 @@ void Engine::run() {
 		}
 
 		// Print fps and cls
-		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(now - then);
+		auto duration =
+			std::chrono::duration_cast<std::chrono::milliseconds>(now - then);
 		auto fps = 1000.0 / duration.count();
 		system("clear");
 		std::cout << "FPS: " << fps << std::endl;

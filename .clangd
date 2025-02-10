@@ -14,6 +14,7 @@ Diagnostics:
       - modernize-use-trailing-return-type
       - readability-redundant-access-specifiers
       - bugprone-easily-swappable-parameters
+      - readability-identifier-length
     CheckOptions:
       readability-identifier-length.IgnoredVariableNames: "^(id)$"
 ---

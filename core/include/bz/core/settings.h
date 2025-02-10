@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/error.h>
+#include <bz/core/error.h>
 #include <filesystem>
 
 namespace bz::core {
@@ -22,10 +22,8 @@ public:
 	// Where the setting folder is located
 	virtual std::filesystem::path root() const = 0;
 
-  // The name of the settings file
-  virtual std::string filename() const = 0;
-
-  
+	// The name of the settings file
+	virtual std::string filename() const = 0;
 };
 
 } // namespace bz::core

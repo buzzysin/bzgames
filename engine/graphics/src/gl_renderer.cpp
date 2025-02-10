@@ -1,14 +1,14 @@
-#include "graphics/gl_renderer.h"
+#include "bz/graphics/gl_renderer.h"
 
 #include "gl.h"
 
-#include "core/logger.h"
-#include "core/macros.h"
-#include "graphics/gl_mesh.h"
-#include "graphics/gl_scene.h"
-#include "graphics/gl_shader_program.h"
-#include "graphics/gl_vertex_array.h"
-#include "graphics/gl_window.h"
+#include "bz/core/logger.h"
+#include "bz/core/macros.h"
+#include "bz/graphics/gl_mesh.h"
+#include "bz/graphics/gl_scene.h"
+#include "bz/graphics/gl_shader_program.h"
+#include "bz/graphics/gl_vertex_array.h"
+#include "bz/graphics/gl_window.h"
 #include <cstring>
 
 namespace bz::engine::graphics {
@@ -46,7 +46,7 @@ void GLRenderer::render(Window *window, BZ_UNUSED Scene *scene) {
 	std::vector<GLMesh *> glMeshes;
 	glMeshes.reserve(meshes.size());
 	for (const auto &mesh : meshes) {
-		auto *glMesh = dynamic_cast<GLMesh *>(mesh.get());
+		auto *glMesh = dynamic_cast<GLMesh *>(mesh);
 		if (glMesh == nullptr) {
 			bzTrace() << "GLScene::render: mesh is not a GLMesh";
 			continue;

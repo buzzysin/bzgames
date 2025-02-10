@@ -1,9 +1,9 @@
 #pragma once
 
-#include "core/result.h"
-#include "graphics/vertex_buffer.h"
+#include "bz/core/result.h"
+#include "bz/graphics/vertex_buffer.h"
 
-#include <core/error.h>
+#include <bz/core/error.h>
 #include <functional>
 #include <vector>
 

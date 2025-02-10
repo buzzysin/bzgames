@@ -1,6 +1,6 @@
-#include "graphics/gl_vertex_buffer.h"
+#include "bz/graphics/gl_vertex_buffer.h"
 
-#include "core/logger.h"
+#include "bz/core/logger.h"
 #include "gl.h"
 
 using namespace bz::engine::errors;

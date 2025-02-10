@@ -1,7 +1,7 @@
 #pragma once
 
-#include <graphics/window.h>
-#include <graphics/window_data.h>
+#include <bz/graphics/window.h>
+#include <bz/graphics/window_data.h>
 
 namespace bz::engine {
 

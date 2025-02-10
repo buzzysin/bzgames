@@ -1,4 +1,4 @@
-#include "graphics/renderer.h"
+#include "bz/graphics/renderer.h"
 
 namespace bz::engine::graphics {
 

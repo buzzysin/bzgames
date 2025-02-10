@@ -1,7 +1,7 @@
 #pragma once
 
-#include <core/result.h>
-#include <engine/game.h>
+#include <bz/core/result.h>
+#include <bz/engine/game.h>
 
 #include <memory>
 

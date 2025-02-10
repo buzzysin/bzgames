@@ -1,9 +1,9 @@
 #pragma once
 
-#include "graphics/renderer.h"
-#include "graphics/scene.h"
+#include "bz/graphics/renderer.h"
+#include "bz/graphics/scene.h"
 
-#include <core/result.h>
+#include <bz/core/result.h>
 
 #include <memory>
 
